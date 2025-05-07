@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import TextEditor from "./TextEditor"
 
 function App() {
-  return "hi"
+  return <TextEditor />
 }
 
 export default App
