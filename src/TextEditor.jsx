@@ -1,7 +1,8 @@
-import { useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Quill from "quill"
 import "./styles.css"
 import "quill/dist/quill.snow.css"
+import { io } from "socket.io-client"
 
 //creating more options to select for tool bar
 const TOOLBAR_OPTIONS = [
@@ -17,6 +18,19 @@ const TOOLBAR_OPTIONS = [
 ]
 
 export default function TextEditor() {
+    const [socket, setSocket] = useState()
+    const [quill, setQuill] = useState()
+
+    useEffect (() => {
+        //server URL
+        const s = io("http://localhost:5174")
+        setSocket(s)
+
+        return () => {
+            s.disconnect()
+        } 
+    }, [])
+
     const wrapperRef = useCallback((wrapper) => {
         //checking if there is a wrapper
         if(wrapper == null) return
@@ -24,7 +38,8 @@ export default function TextEditor() {
         wrapper.innerHTML = " "
         const editor = document.createElement("div")
         wrapper.append(editor)
-        new Quill(editor, { theme: "snow", modules: {toolbar: TOOLBAR_OPTIONS} })
+        const q = new Quill(editor, { theme: "snow", modules: {toolbar: TOOLBAR_OPTIONS} })
+        setQuill(q)
 
     }, [])
     
